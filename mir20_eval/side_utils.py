@@ -19,6 +19,7 @@ def get_event_seq(piece_csv, seq_col_name='ENCODING'):
   df = pd.read_csv(piece_csv, encoding='utf-8')
   return df[seq_col_name].astype('int32').tolist()
 
+
 def compute_histogram_entropy(hist):
   ''' 
   Computes the entropy (log base 2) of a normalised histogram.
@@ -30,6 +31,7 @@ def compute_histogram_entropy(hist):
     float: entropy (log base 2) of the histogram.
   '''
   return scipy.stats.entropy(hist) / np.log(2)
+
 
 def get_pitch_histogram(ev_seq, pitch_evs=range(128), verbose=False):
   '''
@@ -61,6 +63,42 @@ def get_pitch_histogram(ev_seq, pitch_evs=range(128), verbose=False):
       hist[i] = ev_hist.loc[i]
 
   return hist
+
+def get_onset_xor_distance(seq_a, seq_b, bar_ev_id, pos_evs, pitch_evs=range(128)):
+  '''
+  Computes the XOR distance of onset positions between a pair of bars.
+  
+  Parameters:
+    seq_a, seq_b (list): event sequence of a bar of music.
+      IMPORTANT: for this implementation, a ``Note-Position`` event must appear before the associated ``Note-On``.
+    bar_ev_id (int): encoding ID of the ``Bar`` event, vocabulary-dependent.
+    pos_evs (list): encoding IDs of ``Note-Position`` events, vocabulary-dependent.
+    pitch_evs (list): encoding IDs of ``Note-On`` events.
+
+  Returns:
+    float: 0~1, the XOR distance between the 2 bars' (seq_a, seq_b) binary vectors of onsets.
+  '''
+  # sanity checks
+  assert seq_a[0] == bar_ev_id and seq_b[0] == bar_ev_id
+  assert seq_a.count(bar_ev_id) == 1 and seq_b.count(bar_ev_id) == 1
+
+  # compute binary onset vectors
+  n_pos = len(pos_evs)
+  def make_onset_vec(seq):
+    cur_pos = -1
+    onset_vec = np.zeros((n_pos,))
+    for ev in seq:
+      if ev in pos_evs:
+        cur_pos = ev - pos_evs[0]
+      if ev in pitch_evs:
+        onset_vec[cur_pos] = 1
+    return onset_vec
+  a_onsets, b_onsets = make_onset_vec(seq_a), make_onset_vec(seq_b)
+
+  # compute XOR distance
+  dist = np.sum( np.abs(a_onsets - b_onsets) ) / n_pos
+  return dist
+
 
 def get_bars_crop(ev_seq, start_bar, end_bar, bar_ev_id, verbose=False):
   '''
@@ -96,4 +134,4 @@ def get_bars_crop(ev_seq, start_bar, end_bar, bar_ev_id, verbose=False):
         ))
     cropped_seq = ev_seq[ bar_markers[start_bar] : ]
 
-  return cropped_seq
+  return cropped_seq.tolist()

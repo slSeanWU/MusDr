@@ -1,14 +1,16 @@
 import numpy as np
 from glob import glob
+import random, itertools
 
-from side_utils import get_event_seq, get_bars_crop, get_pitch_histogram, compute_histogram_entropy
+from side_utils import get_event_seq, get_bars_crop, get_pitch_histogram, compute_histogram_entropy, get_onset_xor_distance
 
-# ``Bar`` event for Jazz Transformer, should be changed according to vocab
-JAZZ_TRSFMR_BAR_EV = 192  
+# Event encodings for Jazz Transformer, should be changed according to vocab
+JAZZ_TRSFMR_BAR_EV = 192  # ``Bar`` event
+JAZZ_TRSFMR_POS_EVS = range(193, 257)  # ``Position`` events
 
 def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pitch_evs=range(128), verbose=False):
   '''
-  Computes the averaged pitch-class histogram entropy of a piece.
+  Computes the average pitch-class histogram entropy of a piece.
 
   Parameters:
     piece_ev_seq (list): a piece of music in event sequence representation.
@@ -44,6 +46,42 @@ def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR
 
   return np.mean(pitch_ents)
 
+def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id, pos_evs=JAZZ_TRSFMR_POS_EVS, pitch_evs=range(128), max_pairs=1000):
+  '''
+  Computes the average grooving pattern similarity between all pairs of bars of a piece.
+
+  Parameters:
+    piece_ev_seq (list): a piece of music in event sequence representation.
+    bar_ev_id (int): encoding ID of the ``Bar`` event, vocabulary-dependent.
+    pos_evs (list): encoding IDs of ``Note-Position`` events, vocabulary-dependent.
+    pitch_evs (list): encoding IDs of ``Note-On`` events.
+    max_pairs (int): maximum #(pairs) considered, to save computation overhead.
+
+  Returns:
+    float: 0~1, the average grooving pattern similarity of the input piece.
+  '''
+  # remove redundant ``Bar`` marker
+  if piece_ev_seq[-1] == bar_ev_id:
+    piece_ev_seq = piece_ev_seq[:-1]
+
+  # get every single bar & compute indices of bar pairs
+  n_bars = piece_ev_seq.count(bar_ev_id)
+  bar_seqs = []
+  for b in range(n_bars):
+    bar_seqs.append( get_bars_crop(piece_ev_seq, b, b, bar_ev_id) )
+  pairs = list( itertools.combinations(range(n_bars), 2) )
+  if len(pairs) > max_pairs:
+    pairs = random.sample(pairs, max_pairs)
+
+  # compute pairwise grooving similarities
+  grv_sims = []
+  for p in pairs:
+    grv_sims.append(
+      1. - get_onset_xor_distance(bar_seqs[p[0]], bar_seqs[p[1]], bar_ev_id, pos_evs, pitch_evs=pitch_evs)
+    )
+
+  return np.mean(grv_sims)
+
 if __name__ == "__main__":
   # codes below are for testing
   test_pieces = sorted( glob('./testdata/*.csv') )
@@ -52,5 +90,6 @@ if __name__ == "__main__":
   for p in test_pieces:
     print ('>> now processing: {}'.format(p))
     seq = get_event_seq(p)
-    print ('  1-bar: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
-    print ('  4-bar: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
+    print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
+    print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
+    print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
