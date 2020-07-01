@@ -8,7 +8,7 @@ JAZZ_TRSFMR_BAR_EV = 192
 
 def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pitch_evs=range(128), verbose=False):
   '''
-  Computes the averaged pitch-class entropy of a piece.
+  Computes the averaged pitch-class histogram entropy of a piece.
 
   Parameters:
     piece_ev_seq (list): a piece of music in event sequence representation.
@@ -18,7 +18,7 @@ def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR
     verbose (bool): whether to print msg. when a crop contains no notes.
 
   Returns:
-    float: the average n-bar pitch-class entropy of the input piece.
+    float: the average n-bar pitch-class histogram entropy of the input piece.
   '''
   # remove redundant ``Bar`` marker
   if piece_ev_seq[-1] == bar_ev_id:
