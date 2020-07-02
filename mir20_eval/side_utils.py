@@ -20,6 +20,41 @@ def get_event_seq(piece_csv, seq_col_name='ENCODING'):
   return df[seq_col_name].astype('int32').tolist()
 
 
+def get_chord_sequence(ev_seq, chord_evs):
+  '''
+  Extracts the chord sequence (in string representation) from the input piece.
+  NOTE: This function is vocabulary-dependent, 
+        you should implement a new one if a different vocab is used. 
+
+  Parameters:
+    ev_seq (list): a piece of music in event sequence representation.
+    chord_evs (dict of lists): [key] type of chord-related event --> [value] encodings belonging to the type.
+
+  Returns:
+    list of lists: The chord sequence of the input piece, each element (a list) being the representation of a single chord.
+  '''
+  # extract chord-related tokens
+  ev_seq = [
+    x for x in ev_seq if any(x in chord_evs[typ] for typ in chord_evs.keys())
+  ]
+
+  # remove grammar errors in sequence (vocabulary-dependent)
+  legal_seq = []
+  cnt = 0
+  for i, ev in enumerate(ev_seq):
+    cnt += 1
+    if ev in chord_evs['Chord-Slash'] and cnt == 3:
+      cnt = 0
+      legal_seq.extend(ev_seq[i-2:i+1])
+  
+  ev_seq = legal_seq
+  assert not len(ev_seq) % 3
+  chords = []
+  for i in range(0, len(ev_seq), 3):
+    chords.append( ev_seq[i:i+3] )
+
+  return chords
+
 def compute_histogram_entropy(hist):
   ''' 
   Computes the entropy (log base 2) of a normalised histogram.

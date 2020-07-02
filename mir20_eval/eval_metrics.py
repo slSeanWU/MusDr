@@ -2,11 +2,26 @@ import numpy as np
 from glob import glob
 import random, itertools
 
-from side_utils import get_event_seq, get_bars_crop, get_pitch_histogram, compute_histogram_entropy, get_onset_xor_distance
+from side_utils import (
+  get_event_seq, 
+  get_bars_crop, 
+  get_pitch_histogram, 
+  compute_histogram_entropy, 
+  get_onset_xor_distance,
+  get_chord_sequence
+)
 
-# Event encodings for Jazz Transformer, should be changed according to vocab
+
+'''
+Event encodings for Jazz Transformer, should be changed according to vocab
+'''
 JAZZ_TRSFMR_BAR_EV = 192  # ``Bar`` event
 JAZZ_TRSFMR_POS_EVS = range(193, 257)  # ``Position`` events
+JAZZ_TRSFMR_CHORD_EVS = { # Chord-related events
+  'Chord-Tone': range(322, 334),
+  'Chord-Type': range(346, 393),
+  'Chord-Slash': range(334, 346)
+}
 
 def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pitch_evs=range(128), verbose=False):
   '''
@@ -82,6 +97,33 @@ def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id, pos_evs=JAZZ_TRSFMR
 
   return np.mean(grv_sims)
 
+
+def compute_piece_chord_progression_irregularity(piece_ev_seq, chord_evs=JAZZ_TRSFMR_CHORD_EVS, ngram=3):
+  '''
+  Computes the chord progression irregularity of a piece.
+
+  Parameters:
+    piece_ev_seq (list): a piece of music in event sequence representation.
+    chord_evs (dict of lists): [key] type of chord-related event --> [value] encodings belonging to the type.
+    ngram (int): the n-gram in chord progression considered (e.g., bigram, trigram, 4-gram ...), defaults to trigram.
+
+  Returns:
+    float: 0~1, the chord progression irregularity of the input piece, measured on the n-gram specified.
+  '''
+  chord_seq = get_chord_sequence(piece_ev_seq, chord_evs)
+  if len(chord_seq) <= ngram:
+    return 1.
+
+  num_ngrams = len(chord_seq) - ngram
+  unique_set = set()
+  for i in range(num_ngrams):
+    str_repr = '_'.join([ '-'.join(str(x)) for x in chord_seq[i : i + ngram]])
+    if str_repr not in unique_set:
+      unique_set.add( str_repr )
+
+  return len(unique_set) / num_ngrams
+
+
 if __name__ == "__main__":
   # codes below are for testing
   test_pieces = sorted( glob('./testdata/*.csv') )
@@ -90,6 +132,7 @@ if __name__ == "__main__":
   for p in test_pieces:
     print ('>> now processing: {}'.format(p))
     seq = get_event_seq(p)
-    print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
-    print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
-    print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
+    # print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
+    # print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
+    # print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
+    print ('  CPI: {:.4f}'.format(compute_piece_chord_progression_irregularity(seq)))
