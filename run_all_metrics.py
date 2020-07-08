@@ -30,7 +30,7 @@ if __name__ == "__main__":
     required=True, type=str, help='directory containing symbolic musical pieces.'
   )
   parser.add_argument(
-    '-a', '--scplot_dir',
+    '-p', '--scplot_dir',
     required=True, type=str, help='directory containing fitness scape plots (of the exact SAME pieces as in ``symbolic_dir``).'
   )
   parser.add_argument(
