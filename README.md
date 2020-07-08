@@ -49,8 +49,21 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
     * Be sure to include the "MATLAB Signal Processing Toolbox"  
       
   * Download the "SM Toolbox" (Mueller _et. al_, 2013) for scape plot computation
-    * URL: https://rb.gy/20sr04
+    * URL: https://www.audiolabs-erlangen.de/resources/MIR/SMtoolbox/
     * Unzip it (directly, not into a new directory) under the repo root directory
+    * Revise the file ``MATLAB_SM-Toolbox_1.0/MATLAB-Chroma-Toolbox_2.0/wav_to_audio.m`` (_line 107, 108_)  
+      -- due to compatibility issues with newer MATLAB versions
+      * Remove
+      ```Matlab
+         if strcmp(ext,'.wav')
+            [f_audio,fs,nbits] = wavread(strcat(dirAbs,dirRel,wavfilename));
+      ```
+      * Add
+      ```Matlab
+         if ~( strcmp(ext,'.mp3') && strcmp(ext, '.wav') )
+            [f_audio,fs] = audioread(strcat(dirAbs,dirRel,wavfilename));
+            nbits = 24;
+      ```
       
   * Run the Python script that invokes the MATLAB function to compute scape plots 
     ```shell
