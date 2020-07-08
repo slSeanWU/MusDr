@@ -1,21 +1,14 @@
-from scipy.io import loadmat
 from argparse import ArgumentParser
 import os
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
+from mir20_eval.side_utils import read_fitness_mat
 
 def visualize_scapeplot(mat_file, fig_out_dir):
   plt.clf()
-
-  mat_dict = loadmat(mat_file)
-  f_mat = mat_dict['fitness_info'][0, 0][0]
-  f_mat[ np.isnan(f_mat) ] = 0.0
-
-  for slen in range(f_mat.shape[0]):
-    f_mat[slen] = np.roll(f_mat[slen], slen // 2)
-
+  f_mat = read_fitness_mat(mat_file)
+  
   ax = plt.gca()
   ax.set_aspect(1)
   im = ax.imshow(f_mat, vmin=0.0, vmax=0.4, cmap='Greys')

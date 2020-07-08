@@ -8,7 +8,8 @@ from side_utils import (
   get_pitch_histogram, 
   compute_histogram_entropy, 
   get_onset_xor_distance,
-  get_chord_sequence
+  get_chord_sequence,
+  read_fitness_mat
 )
 
 
@@ -26,6 +27,7 @@ JAZZ_TRSFMR_CHORD_EVS = { # Chord-related events
 def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pitch_evs=range(128), verbose=False):
   '''
   Computes the average pitch-class histogram entropy of a piece.
+  (Metric ``H``)
 
   Parameters:
     piece_ev_seq (list): a piece of music in event sequence representation.
@@ -61,9 +63,10 @@ def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR
 
   return np.mean(pitch_ents)
 
-def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id, pos_evs=JAZZ_TRSFMR_POS_EVS, pitch_evs=range(128), max_pairs=1000):
+def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pos_evs=JAZZ_TRSFMR_POS_EVS, pitch_evs=range(128), max_pairs=1000):
   '''
   Computes the average grooving pattern similarity between all pairs of bars of a piece.
+  (Metric ``GS``)
 
   Parameters:
     piece_ev_seq (list): a piece of music in event sequence representation.
@@ -101,6 +104,7 @@ def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id, pos_evs=JAZZ_TRSFMR
 def compute_piece_chord_progression_irregularity(piece_ev_seq, chord_evs=JAZZ_TRSFMR_CHORD_EVS, ngram=3):
   '''
   Computes the chord progression irregularity of a piece.
+  (Metric ``CPI``)
 
   Parameters:
     piece_ev_seq (list): a piece of music in event sequence representation.
@@ -124,15 +128,46 @@ def compute_piece_chord_progression_irregularity(piece_ev_seq, chord_evs=JAZZ_TR
   return len(unique_set) / num_ngrams
 
 
+def compute_structure_indicator(mat_file, low_bound_sec=0, upp_bound_sec=128, sample_rate=2):
+  '''
+  Computes the structureness indicator SI(low_bound_sec, upp_bound_sec) from fitness scape plot (stored in a MATLAB .mat file).
+  (Metric ``SI``)
+
+  Parameters:
+    mat_file (str): path to the .mat file containing fitness scape plot of a piece. (computed by ``run_matlab_scapeplot.py``).
+    low_bound_sec (int, >0): the smallest timescale (in seconds) you are interested to examine.
+    upp_bound_sec (int, >0): the largest timescale (in seconds) you are interested to examine.
+    sample_rate (int): sample rate (in Hz) of the input fitness scape plot.
+
+  Returns:
+    float: 0~1, the structureness indicator (i.e., max fitness value) of the piece within the given range of timescales.
+  '''
+  assert low_bound_sec > 0 and upp_bound_sec > 0, '`low_bound_sec` and `upp_bound_sec` should be positive, got: low_bound_sec={}, upp_bound_sec={}.'.format(low_bound_sec, upp_bound_sec)
+  low_bound_ts = int(low_bound_sec * sample_rate) - 1
+  upp_bound_ts = int(upp_bound_sec * sample_rate)
+  f_mat = read_fitness_mat(mat_file)
+
+  if low_bound_ts >= f_mat.shape[0]:
+    score = 0
+  else:
+    score = np.max(f_mat[ low_bound_ts : upp_bound_ts ])
+
+  return score
+
 if __name__ == "__main__":
   # codes below are for testing
-  test_pieces = sorted( glob('./testdata/*.csv') )
-  print (test_pieces)
+  test_pieces = sorted( glob('./testdata/symbolic/*.csv') )
+  test_pieces_scplot = sorted( glob('./testdata/scplot/*.fit.mat') )
+  print (test_pieces, test_pieces_scplot)
 
-  for p in test_pieces:
+  for p, p_sc in zip(test_pieces, test_pieces_scplot):
     print ('>> now processing: {}'.format(p))
     seq = get_event_seq(p)
-    # print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
-    # print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
-    # print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
+    print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
+    print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
+    print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
     print ('  CPI: {:.4f}'.format(compute_piece_chord_progression_irregularity(seq)))
+    print ('  SI(3, 8): {:.4f}'.format(compute_structure_indicator(p_sc, 3, 8)))
+    print ('  SI(8, 15): {:.4f}'.format(compute_structure_indicator(p_sc, 8, 15)))
+    print ('  SI(15, ): {:.4f}'.format(compute_structure_indicator(p_sc, 15)))
+    print ('==========================')

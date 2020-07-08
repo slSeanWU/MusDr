@@ -1,4 +1,5 @@
 import scipy.stats
+from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 
@@ -134,7 +135,6 @@ def get_onset_xor_distance(seq_a, seq_b, bar_ev_id, pos_evs, pitch_evs=range(128
   dist = np.sum( np.abs(a_onsets - b_onsets) ) / n_pos
   return dist
 
-
 def get_bars_crop(ev_seq, start_bar, end_bar, bar_ev_id, verbose=False):
   '''
   Returns the designated crop (bars) of the input piece.
@@ -170,3 +170,23 @@ def get_bars_crop(ev_seq, start_bar, end_bar, bar_ev_id, verbose=False):
     cropped_seq = ev_seq[ bar_markers[start_bar] : ]
 
   return cropped_seq.tolist()
+
+
+def read_fitness_mat(mat_file):
+  '''
+  Reads and returns (as an ndarray) a fitness scape plot stored in MATLAB .mat format.
+
+  Parameters:
+    mat_file (str): path to the .mat file containing fitness scape plot. (computed by ``run_matlab_scapeplot.py``).
+
+  Returns:
+    ndarray: the fitness scapeplot manipulable in Python.
+  '''
+  mat_dict = loadmat(mat_file)
+  f_mat = mat_dict['fitness_info'][0, 0][0]
+  f_mat[ np.isnan(f_mat) ] = 0.0
+
+  for slen in range(f_mat.shape[0]):
+    f_mat[slen] = np.roll(f_mat[slen], slen // 2)
+
+  return f_mat
