@@ -1,3 +1,5 @@
+import os
+
 import scipy.stats
 from scipy.io import loadmat
 import numpy as np
@@ -171,22 +173,52 @@ def get_bars_crop(ev_seq, start_bar, end_bar, bar_ev_id, verbose=False):
 
   return cropped_seq.tolist()
 
-
-def read_fitness_mat(mat_file):
+def read_fitness_mat(fitness_mat_file):
   '''
-  Reads and returns (as an ndarray) a fitness scape plot stored in MATLAB .mat format.
+  Reads and returns (as an ndarray) a fitness scape plot as a center-duration matrix.
 
   Parameters:
-    mat_file (str): path to the .mat file containing fitness scape plot. (computed by ``run_matlab_scapeplot.py``).
+    fitness_mat_file (str): path to the file containing fitness scape plot.
+      Accepted formats: .mat (MATLAB data), .npy (ndarray)
 
   Returns:
-    ndarray: the fitness scapeplot manipulable in Python.
+    ndarray: the fitness scapeplot encoded as a center-duration matrix.
   '''
-  mat_dict = loadmat(mat_file)
-  f_mat = mat_dict['fitness_info'][0, 0][0]
-  f_mat[ np.isnan(f_mat) ] = 0.0
+  ext = os.path.splitext(fitness_mat_file)[-1].lower()
+
+  if ext == '.npy':
+    f_mat = np.load(fitness_mat_file)
+  elif ext == '.mat':
+    mat_dict = loadmat(fitness_mat_file)
+    f_mat = mat_dict['fitness_info'][0, 0][0]
+    f_mat[ np.isnan(f_mat) ] = 0.0
+  else:
+    raise ValueError('Unsupported fitness scape plot format: {}'.format(ext))
 
   for slen in range(f_mat.shape[0]):
     f_mat[slen] = np.roll(f_mat[slen], slen // 2)
 
   return f_mat
+
+
+######################################################
+# DEPRECATED FUNCTIONS
+######################################################
+# def read_fitness_mat(mat_file):
+#   '''
+#   Reads and returns (as an ndarray) a fitness scape plot stored in MATLAB .mat format.
+
+#   Parameters:
+#     mat_file (str): path to the .mat file containing fitness scape plot. (computed by ``run_matlab_scapeplot.py``).
+
+#   Returns:
+#     ndarray: the fitness scapeplot manipulable in Python.
+#   '''
+#   mat_dict = loadmat(mat_file)
+#   f_mat = mat_dict['fitness_info'][0, 0][0]
+#   f_mat[ np.isnan(f_mat) ] = 0.0
+
+#   for slen in range(f_mat.shape[0]):
+#     f_mat[slen] = np.roll(f_mat[slen], slen // 2)
+
+#   return f_mat
