@@ -3,7 +3,9 @@
 Evaluation metrics for machine-composed symbolic music. 
 
 Python implementation of the evaluation metrics proposed in Section 5 of our paper: 
- * Shih-Lun Wu and Yi-Hsuan Yang: **The Jazz Transformer on the Front Line: Exploring the Shortcomings of AI-composed Music through Quantitative Measures**, (To appear at) the 21st International Conference on Music Information Retrieval (ISMIR), 2020.
+ * **The Jazz Transformer on the Front Line: Exploring the Shortcomings of AI-composed Music through Quantitative Measures**  
+   Shih-Lun Wu and Yi-Hsuan Yang  
+   (To appear at) _The 21st International Society for Music Information Retrieval Conference_ (ISMIR), 2020.
 
 ## Metrics
 
@@ -124,9 +126,13 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
 ## Acknowledgement
 This repository makes use of the following open-source utilities:
  * **MATLAB SM Toolbox**
-   * Meinard Müller, Nanzhu Jiang, and Harald G. Grohganz: **SM Toolbox: MATLAB Implementations for Computing and Enhancing Similarity Matrices**. In Proceedings of 53rd Audio Engineering Society (AES), 2014.
+   * **SM Toolbox: MATLAB Implementations for Computing and Enhancing Similarity Matrices**  
+     Meinard Müller, Nanzhu Jiang, and Harald G. Grohganz  
+     In Proceedings of _the 53rd Audio Engineering Society_ (AES), 2014. 
    * URL: https://www.audiolabs-erlangen.de/resources/MIR/SMtoolbox/
  * **Python FMP Notebooks**
-   * Meinard Müller and Frank Zalkow: **FMP Notebooks: Educational Material for Teaching and Learning Fundamentals of Music Processing**. In Proceedings of the 20th International Conference on Music Information Retrieval (ISMIR), 2019.
+   * **FMP Notebooks: Educational Material for Teaching and Learning Fundamentals of Music Processing**  
+      Meinard Müller and Frank Zalkow  
+      In Proceedings of _the 20th International Society for Music Information Retrieval Conference_ (ISMIR), 2019.
    * URL: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html
    * Special thanks to Wen-Yi Hsiao (_@ Taiwan AILabs_, [personal GitHub](https://github.com/wayne391)) for retrieving the required functions for this repository
