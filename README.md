@@ -1,10 +1,14 @@
 # mir20_eval
 
-Evaluation metrics for machine-composed symbolic music.
+Evaluation metrics for machine-composed symbolic music. 
+
+Python implementation of the evaluation metrics proposed in Section 5 of our paper: 
+ * Shih-Lun Wu and Yi-Hsuan Yang: **The Jazz Transformer on the Front Line: Exploring the Shortcomings of AI-composed Music through Quantitative Measures**, (To appear at) the 21st International Conference on Music Information Retrieval (ISMIR), 2020.
 
 ## Metrics
 
 ### Computed from Symbolic Music
+  The supported input format is _event token sequences_ that can be mapped to MIDIs, rather than general MIDIs. See [this paper](https://arxiv.org/abs/2002.00212) (Huang and Yang, 2020) for a thorough introduction.
   * Pitch-Class Histogram Entropy (**H**)  
     -- measures erraticity of **pitch usage** in shorter timescales (e.g., 1 or 4 bars) 
   * Grooving Pattern Similarity (**GS**)  
@@ -71,22 +75,22 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
       ```
       
   * Run the Python script that invokes the MATLAB function to compute scape plots 
-    ```shell
-    python3 run_matlab_scapeplot.py \
-       -a mir20_eval/testdata/audio  \  # input audio directory
-       -s mir20_eval/testdata/ssm   \   # SSMs output directory
-       -p mir20_eval/testdata/scplot  \ # scape plots output directory
-       -j [num of MATLAB processes]     # for scape plot computation, 2~4 recommended
-    ```
+   ```shell
+   python3 run_matlab_scapeplot.py \
+      -a mir20_eval/testdata/audio  \  # input audio directory
+      -s mir20_eval/testdata/ssm   \   # SSMs output directory
+      -p mir20_eval/testdata/scplot  \ # scape plots output directory
+      -j [num of MATLAB processes]     # for scape plot computation, 2~4 recommended
+   ```
     
 #### Run with Python
  * **No additional setup required, but runs slowly on longer songs**
   ```shell
-   python3 run_python_scapeplot.py \
-      -a mir20_eval/testdata/audio  \  # input audio directory
-      -s mir20_eval/testdata/ssm   \   # SSMs output directory
-      -p mir20_eval/testdata/scplot  \ # scape plots output directory
-      -j [num of Python processes]     # for scape plot computation, 2~4 recommended
+  python3 run_python_scapeplot.py \
+     -a mir20_eval/testdata/audio  \  # input audio directory
+     -s mir20_eval/testdata/ssm   \   # SSMs output directory
+     -p mir20_eval/testdata/scplot  \ # scape plots output directory
+     -j [num of Python processes]     # for scape plot computation, 2~4 recommended
   ```
  
 #### Visualize the Scape Plots
@@ -99,13 +103,13 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
     
 ### Run All Evaluation Metrics and Get the Report  
  * Run ``run_all_metrics.py`` when you have computed the fitness scape plots
-    ```shell
-    python3 run_all_metrics.py \
-       -s mir20_eval/testdata/symbolic  \ # input symbolic music directory
-       -p mir20_eval/testdata/scplot  \   # input scape plots directory (having the same pieces as the directory above)
-       -o testout.csv \                   # output file for results
-       --timescale_bounds 3 8 15          # (optional) timescale bounds for short-, mid-, and long-term SI metric, respectively; defaults to 3 8 15
-    ```
+  ```shell
+  python3 run_all_metrics.py \
+     -s mir20_eval/testdata/symbolic  \ # input symbolic music directory
+     -p mir20_eval/testdata/scplot  \   # input scape plots directory (having the same pieces as the directory above)
+     -o testout.csv \                   # output file for results
+     --timescale_bounds 3 8 15          # (optional) timescale bounds for short-, mid-, and long-term SI metric, respectively; defaults to 3 8 15
+  ```
     
 ## Release Notes
  * July 8th, 2020
@@ -125,3 +129,4 @@ This repository makes use of the following open-source utilities:
  * **Python FMP Notebooks**
    * Meinard Müller and Frank Zalkow: **FMP Notebooks: Educational Material for Teaching and Learning Fundamentals of Music Processing**. In Proceedings of the 20th International Conference on Music Information Retrieval (ISMIR), 2019.
    * URL: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html
+   * Special thanks to Wen-Yi Hsiao (_@ Taiwan AILabs_, [personal GitHub](https://github.com/wayne391)) for retrieving the required functions for this repository
