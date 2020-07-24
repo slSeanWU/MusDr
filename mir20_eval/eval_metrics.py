@@ -14,17 +14,18 @@ from side_utils import (
 
 
 '''
-Event encodings for Jazz Transformer, should be changed according to vocab
+Default event encodings (ones used by the Jazz Transformer).
+You may override the defaults in function arguments to suit your own vocabulary.
 '''
-JAZZ_TRSFMR_BAR_EV = 192  # ``Bar`` event
-JAZZ_TRSFMR_POS_EVS = range(193, 257)  # ``Position`` events
-JAZZ_TRSFMR_CHORD_EVS = { # Chord-related events
+BAR_EV = 192               # the ID of ``Bar`` event
+POS_EVS = range(193, 257)  # the IDs of ``Position`` events
+CHORD_EVS = {              # the IDs of Chord-related events
   'Chord-Tone': range(322, 334),
   'Chord-Type': range(346, 393),
   'Chord-Slash': range(334, 346)
 }
 
-def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pitch_evs=range(128), verbose=False):
+def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=BAR_EV, pitch_evs=range(128), verbose=False):
   '''
   Computes the average pitch-class histogram entropy of a piece.
   (Metric ``H``)
@@ -33,7 +34,7 @@ def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR
     piece_ev_seq (list): a piece of music in event sequence representation.
     window_size (int): length of segment (in bars) involved in the calc. of entropy at once.
     bar_ev_id (int): encoding ID of the ``Bar`` event, vocabulary-dependent.
-    pitch_evs (list): encoding IDs of ``Note-On`` events.
+    pitch_evs (list): encoding IDs of ``Note-On`` events, should be sorted in increasing order by pitches.
     verbose (bool): whether to print msg. when a crop contains no notes.
 
   Returns:
@@ -63,7 +64,7 @@ def compute_piece_pitch_entropy(piece_ev_seq, window_size, bar_ev_id=JAZZ_TRSFMR
 
   return np.mean(pitch_ents)
 
-def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id=JAZZ_TRSFMR_BAR_EV, pos_evs=JAZZ_TRSFMR_POS_EVS, pitch_evs=range(128), max_pairs=1000):
+def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id=BAR_EV, pos_evs=POS_EVS, pitch_evs=range(128), max_pairs=1000):
   '''
   Computes the average grooving pattern similarity between all pairs of bars of a piece.
   (Metric ``GS``)
@@ -72,7 +73,7 @@ def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id=JAZZ_TRSFMR_BAR_EV, 
     piece_ev_seq (list): a piece of music in event sequence representation.
     bar_ev_id (int): encoding ID of the ``Bar`` event, vocabulary-dependent.
     pos_evs (list): encoding IDs of ``Note-Position`` events, vocabulary-dependent.
-    pitch_evs (list): encoding IDs of ``Note-On`` events.
+    pitch_evs (list): encoding IDs of ``Note-On`` events, should be sorted in increasing order by pitches.
     max_pairs (int): maximum #(pairs) considered, to save computation overhead.
 
   Returns:
@@ -101,7 +102,7 @@ def compute_piece_groove_similarity(piece_ev_seq, bar_ev_id=JAZZ_TRSFMR_BAR_EV, 
   return np.mean(grv_sims)
 
 
-def compute_piece_chord_progression_irregularity(piece_ev_seq, chord_evs=JAZZ_TRSFMR_CHORD_EVS, ngram=3):
+def compute_piece_chord_progression_irregularity(piece_ev_seq, chord_evs=CHORD_EVS, ngram=3):
   '''
   Computes the chord progression irregularity of a piece.
   (Metric ``CPI``)
@@ -165,7 +166,7 @@ if __name__ == "__main__":
     seq = get_event_seq(p)
     print ('  1-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 1)))
     print ('  4-bar H: {:.3f}'.format(compute_piece_pitch_entropy(seq, 4)))
-    print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, JAZZ_TRSFMR_BAR_EV)))
+    print ('  GS: {:.4f}'.format(compute_piece_groove_similarity(seq, BAR_EV)))
     print ('  CPI: {:.4f}'.format(compute_piece_chord_progression_irregularity(seq)))
     print ('  SI(3, 8): {:.4f}'.format(compute_structure_indicator(p_sc, 3, 8)))
     print ('  SI(8, 15): {:.4f}'.format(compute_structure_indicator(p_sc, 8, 15)))

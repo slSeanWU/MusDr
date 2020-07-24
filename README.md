@@ -113,7 +113,7 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
     
 ## Release Notes
  * July 8th, 2020
-   * The metrics **H**, **GS**, and **CPI** now only natively support event-based representations defined in **Jazz Transformer**  
+   * The metrics **H**, **GS**, and **CPI** now only natively support event-based representations defined in the **Jazz Transformer**  
      -- we welcome contributions to extend the compatibility to other representations, or even general MIDIs 
    * Metric **SI** now relies on MATLAB and audio  
      -- planning to re-implement it with Python-native package ``librosa``  

@@ -77,7 +77,7 @@ def get_pitch_histogram(ev_seq, pitch_evs=range(128), verbose=False):
 
   Parameters:
     ev_seq (list): a piece of music in event sequence representation.
-    pitch_evs (list): encoding IDs of ``Note-On`` events.
+    pitch_evs (list): encoding IDs of ``Note-On`` events, should be sorted in increasing order by pitches.
     verbose (bool): whether to print msg. when ev_seq has no notes.
 
   Returns:
