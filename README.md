@@ -123,7 +123,7 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
  * July 22nd, 2020
    * Add Python support for SSM and fitness scape plot computation
 
-## Acknowledgement
+## Acknowledgements
 This repository makes use of the following open-source utilities:
  * **MATLAB SM Toolbox**
    * **SM Toolbox: MATLAB Implementations for Computing and Enhancing Similarity Matrices**  
@@ -136,3 +136,7 @@ This repository makes use of the following open-source utilities:
       In Proceedings of _the 20th International Society for Music Information Retrieval Conference_ (ISMIR), 2019.
    * URL: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html
    * Special thanks to **Wen-Yi Hsiao** (_@ Taiwan AILabs_, [personal GitHub](https://github.com/wayne391)) for retrieving the required functions for this repository
+
+## See Also
+ * The repository of the **Jazz Transformer**, our AI Jazz composition model:  
+   https://github.com/slSeanWU/jazz_transformer
