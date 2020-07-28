@@ -135,4 +135,4 @@ This repository makes use of the following open-source utilities:
       Meinard Müller and Frank Zalkow  
       In Proceedings of _the 20th International Society for Music Information Retrieval Conference_ (ISMIR), 2019.
    * URL: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html
-   * Special thanks to Wen-Yi Hsiao (_@ Taiwan AILabs_, [personal GitHub](https://github.com/wayne391)) for retrieving the required functions for this repository
+   * Special thanks to **Wen-Yi Hsiao** (_@ Taiwan AILabs_, [personal GitHub](https://github.com/wayne391)) for retrieving the required functions for this repository
