@@ -1,4 +1,4 @@
-# mir20_eval
+# MusDr.
 
 Evaluation metrics for machine-composed symbolic music. 
 
@@ -29,7 +29,7 @@ Python implementation of the evaluation metrics proposed in Section 5 of our pap
   * ``run_python_scapeplot.py``: Python-native equivalent of ``run_matlab_scapeplot.py``
   * ``vis_scapeplot.py``: visualizes the computed scape plots
   * ``run_all_metrics.py``: runs all evaluation metrics and outputs results
-  * ``mir20_eval/``
+  * ``musdr/``
     * ``testdata/``: contains example testdata
     * ``eval_metrics.py``: contains the implementation of the 4 metrics mentioned above
     * ``side_utils.py``: some I/O and computation utilities
