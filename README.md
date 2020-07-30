@@ -123,7 +123,7 @@ NOTE: all of the following commands run on the example testdata under ``musdr/te
   * ``-s``: input symbolic music directory
   * ``-p``: input scape plots directory (having the same pieces as the symbolic music directory)
   * ``-o``: path to output file for results
-  * ``--timescale_bounds [list of ints]``: timescale bounds for _short-_, _mid-_, and _long-term_ **SI** metric (optional, defaults to ``3 8 15``)
+  * ``--timescale_bounds``: timescale bounds for _short-_, _mid-_, and _long-term_ **SI** metric (optional, defaults to ``3 8 15``)
     
 ## Release Notes
  * July 8th, 2020
