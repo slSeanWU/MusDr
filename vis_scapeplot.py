@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from mir20_eval.side_utils import read_fitness_mat
+from musdr.side_utils import read_fitness_mat
 
 def visualize_scapeplot(mat_file, fig_out_dir):
   plt.clf()

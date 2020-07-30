@@ -1,16 +1,18 @@
 import os, sys
-sys.path.append('./mir20_eval/')
+import warnings
+sys.path.append('./musdr/')
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import pandas as pd
 from glob import glob
 from argparse import ArgumentParser
-from mir20_eval.eval_metrics import (
+from musdr.eval_metrics import (
   compute_piece_pitch_entropy,
   compute_piece_groove_similarity,
   compute_piece_chord_progression_irregularity,
   compute_structure_indicator
 )
-from mir20_eval.side_utils import get_event_seq
+from musdr.side_utils import get_event_seq
 
 def write_report(result_dict, out_csv_file):
   df = pd.DataFrame().from_dict(result_dict)
@@ -44,7 +46,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   test_pieces = sorted( glob(os.path.join(args.symbolic_dir, '*')) )
-  test_pieces_scplot = sorted( glob(os.path.join(args.scplot_dir, '*.fit.mat')) )
+  test_pieces_scplot = sorted( glob(os.path.join(args.scplot_dir, '*')) )
   print (test_pieces, test_pieces_scplot)
   result_dict = {
     'piece_name': [],

@@ -48,7 +48,7 @@ Python implementation of the evaluation metrics proposed in Section 5 of our pap
       pip3 install -r requirements.txt
     ```
 
-NOTE: all of the following commands run on the example testdata under ``mir20_eval/testdata/`` 
+NOTE: all of the following commands run on the example testdata under ``musdr/testdata/`` 
 
 ### Computation of Fitness Scape Plots
   -- _required for metric **SI**_
@@ -79,9 +79,9 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
   * Run the Python script that invokes the MATLAB function to compute scape plots 
    ```shell
    python3 run_matlab_scapeplot.py \
-      -a mir20_eval/testdata/audio  \  # input audio directory
-      -s mir20_eval/testdata/ssm   \   # SSMs output directory
-      -p mir20_eval/testdata/scplot  \ # scape plots output directory
+      -a musdr/testdata/audio  \  # input audio directory
+      -s musdr/testdata/ssm   \   # SSMs output directory
+      -p musdr/testdata/scplot  \ # scape plots output directory
       -j [num of MATLAB processes]     # for scape plot computation, 2~4 recommended
    ```
     
@@ -89,9 +89,9 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
  * **No additional setup required, but runs slowly on longer songs**
   ```shell
   python3 run_python_scapeplot.py \
-     -a mir20_eval/testdata/audio  \  # input audio directory
-     -s mir20_eval/testdata/ssm   \   # SSMs output directory
-     -p mir20_eval/testdata/scplot  \ # scape plots output directory
+     -a musdr/testdata/audio  \  # input audio directory
+     -s musdr/testdata/ssm   \   # SSMs output directory
+     -p musdr/testdata/scplot  \ # scape plots output directory
      -j [num of Python processes]     # for scape plot computation, 2~4 recommended
   ```
  
@@ -99,16 +99,16 @@ NOTE: all of the following commands run on the example testdata under ``mir20_ev
  * Works on scape plots in both ``.mat`` and ``.npy`` formats
   ```shell
   python3 vis_scapeplot.py \
-     -p mir20_eval/testdata/scplot  \ # input scape plots directory
-     -f mir20_eval/testdata/scfig     # scape plot figures output directory
+     -p musdr/testdata/scplot  \ # input scape plots directory
+     -f musdr/testdata/scfig     # scape plot figures output directory
   ```
     
 ### Run All Evaluation Metrics and Get the Report  
  * Run ``run_all_metrics.py`` when you have computed the fitness scape plots
   ```shell
   python3 run_all_metrics.py \
-     -s mir20_eval/testdata/symbolic  \ # input symbolic music directory
-     -p mir20_eval/testdata/scplot  \   # input scape plots directory (having the same pieces as the directory above)
+     -s musdr/testdata/symbolic  \ # input symbolic music directory
+     -p musdr/testdata/scplot  \   # input scape plots directory (having the same pieces as the directory above)
      -o testout.csv \                   # output file for results
      --timescale_bounds 3 8 15          # (optional) timescale bounds for short-, mid-, and long-term SI metric, respectively; defaults to 3 8 15
   ```
