@@ -79,21 +79,29 @@ NOTE: all of the following commands run on the example testdata under ``musdr/te
   * Run the Python script that invokes the MATLAB function to compute scape plots 
    ```shell
    python3 run_matlab_scapeplot.py \
-      -a musdr/testdata/audio  \  # input audio directory
-      -s musdr/testdata/ssm   \   # SSMs output directory
-      -p musdr/testdata/scplot  \ # scape plots output directory
-      -j [num of MATLAB processes]     # for scape plot computation, 2~4 recommended
+      -a musdr/testdata/audio  \
+      -s musdr/testdata/ssm   \
+      -p musdr/testdata/scplot  \
+      -j 1
    ```
+   * ``-a``: input audio directory
+   * ``-s``: output directory for SSMs
+   * ``-p``: output directory for scape plots
+   * ``-j``: number of processes spawned for scape plot computation (optional, defaults to ``1``; ``2~4`` is recommended)
     
 #### Run with Python
  * **No additional setup required, but runs slowly on longer songs**
   ```shell
   python3 run_python_scapeplot.py \
-     -a musdr/testdata/audio  \  # input audio directory
-     -s musdr/testdata/ssm   \   # SSMs output directory
-     -p musdr/testdata/scplot  \ # scape plots output directory
-     -j [num of Python processes]     # for scape plot computation, 2~4 recommended
+     -a musdr/testdata/audio  \
+     -s musdr/testdata/ssm   \
+     -p musdr/testdata/scplot  \
+     -j 1
   ```
+   * ``-a``: input audio directory
+   * ``-s``: output directory for SSMs
+   * ``-p``: output directory for scape plots
+   * ``-j``: number of processes spawned for scape plot computation (optional, defaults to ``1``; ``2~4`` is recommended)
  
 #### Visualize the Scape Plots
  * Works on scape plots in both ``.mat`` and ``.npy`` formats
@@ -107,11 +115,15 @@ NOTE: all of the following commands run on the example testdata under ``musdr/te
  * Run ``run_all_metrics.py`` when you have computed the fitness scape plots
   ```shell
   python3 run_all_metrics.py \
-     -s musdr/testdata/symbolic  \ # input symbolic music directory
-     -p musdr/testdata/scplot  \   # input scape plots directory (having the same pieces as the directory above)
-     -o testout.csv \                   # output file for results
-     --timescale_bounds 3 8 15          # (optional) timescale bounds for short-, mid-, and long-term SI metric, respectively; defaults to 3 8 15
+     -s musdr/testdata/symbolic  \
+     -p musdr/testdata/scplot  \
+     -o testout.csv \
+     --timescale_bounds 3 8 15
   ```
+  * ``-s``: input symbolic music directory
+  * ``-p``: input scape plots directory (having the same pieces as the symbolic music directory)
+  * ``-o``: path to output file for results
+  * ``--timescale_bounds [list of ints]``: timescale bounds for _short-_, _mid-_, and _long-term_ **SI** metric (optional, defaults to ``3 8 15``)
     
 ## Release Notes
  * July 8th, 2020
