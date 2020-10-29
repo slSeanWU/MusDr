@@ -5,7 +5,7 @@ Evaluation metrics for machine-composed symbolic music.
 Python implementation of the evaluation metrics proposed in Section 5 of our paper: 
  * **The Jazz Transformer on the Front Line: Exploring the Shortcomings of AI-composed Music through Quantitative Measures**  
    Shih-Lun Wu and Yi-Hsuan Yang  
-   (To appear at) _The 21st International Society for Music Information Retrieval Conference_ (ISMIR), 2020.
+   _The 21st International Society for Music Information Retrieval Conference_ (ISMIR), 2020.
 
 ## Metrics
 
